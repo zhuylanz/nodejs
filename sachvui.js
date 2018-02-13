@@ -174,15 +174,22 @@ async function truyenhh() {
 }
 
 
-async function wattpad() {
-	let f_location = '/home/zhuylanz/Desktop/testwat';
+async function wattpad(url) {
+	let re_rmspc = /(\s|-|\/)/g;
 	const browser = await puppeteer.launch({ headless : true });
 	const page = await browser.newPage();
-	let url = 'https://www.wattpad.com/20593795-the-good-girl%27s-bad-boys-the-good-the-bad-and-the';
+	// let url = 'https://www.wattpad.com/20593795-the-good-girl%27s-bad-boys-the-good-the-bad-and-the';
 
 	try {
 
-		await page.goto(url, { waitUntil : 'networkidle2', timeout : 90000 });
+		await page.goto(url, { waitUntil : 'domcontentloaded', timeout : 90000 });
+		let retry = 0;
+		let f_name = await page.evaluate(() => {
+			return $('h1').text();
+		});
+		f_name = accent.remove(f_name).replace(re_rmspc, '');
+		let f_location = '/home/zhuylanz/Desktop/wattpad/' + f_name + '.txt';
+		console.log('--file location : ' + f_location);
 
 		while (true) {
 			console.log('--START--');
@@ -208,9 +215,9 @@ async function wattpad() {
 			let $ = cheerio.load(body);
 
 			//title
-			let title = $('h2').text();
+			let title = $('h2').text().trim();
 			console.log('TITLE: ' + title);
-			fs.appendFileSync(f_location, title);
+			fs.appendFileSync(f_location, title + '\n\n');
 
 			//body
 			$('pre p').clone().children('span').remove().end().each((i, ele) => {
@@ -219,18 +226,28 @@ async function wattpad() {
 				console.log(text);
 				fs.appendFileSync(f_location, text);
 			});
+			fs.appendFileSync(f_location, '\n-------------------------------------------------------\n\n');
 
 			//next page
+			let old_title = title;
 			let next_link = $('.next-up').parent('a').attr('href');
 			if (next_link) {
-				console.log('--going next--')
+				retry = 0;
+				console.log('--going next : ' + next_link);
 				await page.goto(next_link, { waitUntil : 'domcontentloaded', timeout : 90000 });
 			} else {
-				console.log('--end the story at ' + title + '--')
-				browser.close();
-				break;
+				if ($('.next-up') || retry >= 3) {
+					console.log('--end the story at ' + old_title + '--');
+					// browser.close();
+					break;
+				}
+
+				retry++;
+				console.log('--retrying ' + retry + '--');
+				await page.waitFor(2000);
+				await page.reload({ waitUntil : 'domcontentloaded', timeout : 90000 });
 			}
-			
+
 		}
 	} catch(e) {
 		console.log('DEBUG (catch e) : ' + e);
@@ -238,4 +255,46 @@ async function wattpad() {
 }
 
 // truyenhh();
-wattpad();
+wattpad('https://www.wattpad.com/228865692-im-l%E1%BA%B7ng-s%E1%BB%A9c-m%E1%BA%A1nh-c%E1%BB%A7a-ng%C6%B0%E1%BB%9Di-h%C6%B0%E1%BB%9Bng-n%E1%BB%99i-l%E1%BB%9Di-ng%C6%B0%E1%BB%9Di');
+
+// const express = require('express');
+// const app = express();
+
+// let bird = require('./bird.js');
+// app.use('/bird', bird);
+// app.use((req, res, next) => { console.log('good good'); next(); });
+
+
+// const path = require('path');
+// // here you set that all templates are located in `/views` directory
+// app.set('views', __dirname);
+
+// // here you set that you're using `ejs` template engine, and the
+// // default extension is `ejs`
+// app.set('view engine', 'ejs');
+
+
+
+// app.get('/', function (req, res, next) {
+// 	res.sendFile('./testpage.html', { root : __dirname });
+// });
+
+// app.use(express.static(__dirname));
+
+
+// app.get('/def', function (req, res, next) {
+// 	res.sendFile('./page2.html', { root : __dirname });
+// });
+
+// app.listen(3000, () => console.log('Example app listening on port 3000!'));
+
+// app.get('/viewdirectory', require('./mw.js'))
+
+
+// const Vue = require('vue');
+// let tete = new Vue ({
+// 	el : '#vue',
+// 	data : {
+// 		counter : 0
+// 	}
+// });
