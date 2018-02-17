@@ -1,13 +1,15 @@
-const fs = require('fs');
+var fs = require('fs'),
+    request = require('request');
 
-// console.log(fs.readFileSync('myfile','utf8').split('\n'));
+var download = function(uri, filename, callback){
+  request.head(uri, function(err, res, body){
+    
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+  });
+};
 
-let obje = {
-	abc : 'xyz',
-	def : '12345'
-}
+// download('http://getwallpapers.com/wallpaper/full/e/6/0/61316.jpg', 'google.jpg', function(){
+//   console.log('done');
+// });
 
-console.log(obje);
-
-let url1 = 'https://www.wattpad.com/229211576-im-l%E1%BA%B7ng-s%E1%BB%A9c-m%E1%BA%A1nh-c%E1%BB%A7a-ng%C6%B0%E1%BB%9Di-h%C6%B0%E1%BB%9Bng-n%E1%BB%99i-gi%E1%BB%9Bi-thi%E1%BB%87u'
-let url2 = 'https://www.wattpad.com/304574390'
+console.log(Math.floor(new Date()/1000));

@@ -35,9 +35,10 @@ window.fbAsyncInit = function() {
 
 	FB.getLoginStatus(function(res) {
 		fbInited = true;
-		console.log(res);
-		if (res.status === 'connected') {
+		socket.emit('fb-login', res, fn => {console.log(fn)});
 
+		if (res.status === 'connected') {
+			$('#btn-login').remove();
 		} else if (res.status === 'not_authorized') {
 
 
@@ -59,9 +60,12 @@ function fbEnsureInit(callback) {
 	}
 }
 
-fbEnsureInit(function(){FB.api('/113124472034820', (res) => {console.log(res)});});
 //Graph API//
 
+
+//Socket IO//
+let socket = io('/graph');
+//Socket IO//
 
 $(document).ready(function() {
 
@@ -74,6 +78,6 @@ $(document).ready(function() {
 		window.location = 'https://graph.facebook.com/oauth/authorize?client_id=' + app_id + '&scope=' + app_scope + '&redirect_uri=' + app_uri
 	}
 
-$('#btn-login').on('click', RequestLogin);
+	$('#btn-login').on('click', RequestLogin);
 
 });

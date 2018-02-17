@@ -7,26 +7,30 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
 const watt_io = io.of('/wattpad-scraper');
+const graph_io = io.of('/graph');
+
 const watt = require('./routes/watt.js');
 const graph = require('./routes/graph.js');
 
-const pgp = require('pg-promise')();
-const db = pgp('postgres://zhuylanz:hlschangyeuai0@localhost:5432/nuso-graph');
+const db = require('./dbcon.js');
 
-db.any('UPDATE users SET token=$1, expire=$2 WHERE uid=$3', ['abcd', 5353, '31413'], (ev) => { ev && ev.id })
-.then(function (data) {
-	console.log('DATA:', data);
-})
-.catch(function (error) {
-	console.log('ERROR: ' + error);
-	db.none('INSERT INTO users (uid, token, expire) VALUES ($1, $2, $3)', ['314', 'abcd', 5353]).then(function (data) {
-		console.log('DATA:', data);
-	})
-	.catch(function (error) {
-		console.log('ERROR:', error);
-	});
-});
+// db.task(t => {
+// 	return t.any('SELECT * FROM users WHERE uid=$1', '314')
+// 	.then(function (data) {
+// 		console.log('DATA:', data);
+// 	return t.any('SELECT * FROM users WHERE uid=$1', '314d')
+// 	.then(function (data) {
+// 		console.log('DATA:', data);
+// 	})
+// 	.catch(function (error) {
+// 		console.log('ERROR: ' + error);
+// 	});
+// 	})
+// 	.catch(function (error) {
+// 		console.log('ERROR: ' + error);
+// 	});
 
+// });
 
 //-----routing-----//
 app.use(express.static(__dirname));
@@ -35,6 +39,7 @@ app.use('/graph', graph.router);
 
 //-----socketIO-----//
 watt_io.on('connection', watt.socket);
+graph_io.on('connection', graph.socket);
 
 //-----listening-----//
 http.listen(3214, () => { console.log('Wattpadd Scraper Up and Running on Port 3214'); });

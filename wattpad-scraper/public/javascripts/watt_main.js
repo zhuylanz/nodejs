@@ -33,7 +33,7 @@ let main_vue = new Vue({
 let socket = io('/wattpad-scraper');
 
 socket.on('log_watt', (logs) => {
-	main_vue.$data.log_watt = logs;
+	main_vue.log_watt = logs;
 	console.log('scroll');
 	$("#log-container").scrollTop($('#log-container')[0].scrollHeight);
 });
