@@ -18,6 +18,7 @@ console.log_passer = function(d, logfile, option) {
 async function passer(proxy_arr, url_arr, wait_time, n_limit, logfile) {
 	
 	async function going(prox, wait_time){
+	 console.log(instance++);
 		console.log(prox);
 
 		let browser = await puppeteer.launch({
@@ -38,14 +39,18 @@ async function passer(proxy_arr, url_arr, wait_time, n_limit, logfile) {
 			}
 
 			browser.close();
+			console.log(instance--);
 		} catch(e) {
 			console.log(prox + ' ' + e);
 			browser.close();
+			console.log(instance--);
 		}
 	}
 
 
 	try {
+	 
+	 let instance = 0;
 		for (let i = 0; i < proxy_arr.length; i++) {
 			going(proxy_arr[i], wait_time);
 
