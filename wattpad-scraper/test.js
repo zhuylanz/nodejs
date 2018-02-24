@@ -1,15 +1,27 @@
-var fs = require('fs'),
-    request = require('request');
+const puppeteer = require('puppeteer');
+let url = 'http://hoichowebsite.com';
 
-var download = function(uri, filename, callback){
-  request.head(uri, function(err, res, body){
-    
-    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-  });
-};
+(async function() {
+	const browser = await puppeteer.launch({
+		headless : false,
+		args: [
+		'--proxy-server=125.24.236.115:8888',
+		]
+	});
+	const browser2 = await puppeteer.launch({
+		headless : false,
+		args: [
+		'--proxy-server=125.163.114.9:53281',
+		]
+	});
+	
+	const page = await browser.newPage();
+	const page2 = await browser2.newPage();
 
-// download('http://getwallpapers.com/wallpaper/full/e/6/0/61316.jpg', 'google.jpg', function(){
-//   console.log('done');
-// });
-
-console.log(Math.floor(new Date()/1000));
+	try {
+		await page.goto(url, { waitUntil : 'domcontentloaded', timeout : 90000 });
+		await page2.goto(url, { waitUntil : 'domcontentloaded', timeout : 90000 });
+	} catch (e) {
+		console.log(e)
+	}
+})();
