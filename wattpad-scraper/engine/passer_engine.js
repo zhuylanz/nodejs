@@ -16,13 +16,20 @@ console.log_passer = function(d, logfile, option) {
 
 
 async function passer(proxy_arr, url_arr, wait_time, n_limit, logfile) {
-	
+
+
+	function wait(time) {
+		return new Promise(resolve => {
+			setTimeout(resolve, time);
+		});
+	}
+
+
 	async function going(prox, wait_time){
-	 console.log(instance++);
-		console.log(prox);
+		console.log_passer(prox, logfile);
 
 		let browser = await puppeteer.launch({
-			headless : true,
+			headless : false,
 			args: [
 			'--proxy-server=' + prox,
 			]
@@ -34,35 +41,51 @@ async function passer(proxy_arr, url_arr, wait_time, n_limit, logfile) {
 
 
 			for (j in url_arr) {
-				await page.goto(url_arr[j], { waitUntil : 'domcontentloaded', timeout : 90000 });
+				await page.goto(url_arr[j], { waitUntil : 'domcontentloaded', timeout : 10000 });
 				await page.waitFor(wait_time);
 			}
 
 			browser.close();
-			console.log(instance--);
 		} catch(e) {
-			console.log(prox + ' ' + e);
+			console.log_passer(prox + ' ' + e, logfile);
 			browser.close();
-			console.log(instance--);
 		}
+
+		return;
 	}
 
 
 	try {
-	 
-	 let instance = 0;
-		for (let i = 0; i < proxy_arr.length; i++) {
-			going(proxy_arr[i], wait_time);
+
+		let instance = 0;
+		for (i = 0; i < proxy_arr.length; i++) {
+			if (instance < n_limit) {	
+				going(proxy_arr[i], wait_time).then(() => { instance--; console.log_passer(instance, logfile); }).catch(() => { instance--; console.log_passer(instance, logfile); });
+				instance++;
+				console.log_passer(instance, logfile);
+			} else {
+				while (instance >= n_limit ) {
+					await wait(200);
+				}
+			}
 
 		}
+
+		console.log_passer('>>passer-ended', logfile);
 	} catch(e) {
-		console.log('Catch(e): ' + e);
+		console.log_passer('>>passer-ended', logfile);
+		console.log_passer('Catch(e): ' + e, logfile);
 	}
+	
 
 }
 
-let proxy = ['144.202.4.212:8080', '185.93.3.123:8080', '34.201.2.115:3128', 'a', 'b', 'c'];
-let url = ['http://hoichowebsite.com', 'http://hoichowebsite.com/category/thi-truong-va-kinh-te/', 'http://hoichowebsite.com/bi-quyet-lam-giau-lien-ket-trong-lan-vu-nu-xuat-khau-kinh-doan/'];
-let delay = 5000;
+// let proxy = ['61.7.177.99:3128', '185.93.3.123:8080', '34.201.2.115:3128', '133.130.103.208:8080', '77.73.67.74:3128', '185.93.3.123:8080'];
+// let url = ['http://hoichowebsite.com', 'http://hoichowebsite.com/category/thi-truong-va-kinh-te/', 'http://hoichowebsite.com/bi-quyet-lam-giau-lien-ket-trong-lan-vu-nu-xuat-khau-kinh-doan/'];
+// let delay = 5000;
+// let logfile = __dirname + '/abc';
 
-passer(proxy, url, delay, 2);
+// passer(proxy, url, delay, 3);
+
+
+module.exports = passer;

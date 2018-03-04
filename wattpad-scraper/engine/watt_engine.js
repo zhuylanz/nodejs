@@ -149,9 +149,9 @@ async function wattpad(url, logfile) {
 
 		}
 	} catch(e) {
+		console.log_watt('--watt-ended--', logfile);
 		console.log_watt('DEBUG (catch e) : ' + e, logfile);
 		browser.close();
-		console.log_watt('--watt-ended--', logfile);
 	}
 }
 

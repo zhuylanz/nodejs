@@ -38,7 +38,7 @@ window.fbAsyncInit = function() {
 		socket.emit('fb-login', res, fn => {console.log(fn)});
 
 		if (res.status === 'connected') {
-			$('#btn-login').remove();
+			// $('#btn-login').remove();
 		} else if (res.status === 'not_authorized') {
 
 
@@ -78,6 +78,17 @@ $(document).ready(function() {
 		window.location = 'https://graph.facebook.com/oauth/authorize?client_id=' + app_id + '&scope=' + app_scope + '&redirect_uri=' + app_uri
 	}
 
-	$('#btn-login').on('click', RequestLogin);
+	function test() {
+		// window.location = 'https://www.facebook.com/dialog/feed?app_id=151517752267977&display=page&caption=An%20example%20caption&link=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F&redirect_uri=http://localhost:3214/graph&to=100001350407726'
+		FB.ui({
+			method: 'share',
+			link: 'https://developers.facebook.com/docs/',
+			caption: 'An example caption',
+			to: '100001350407726',
+		}, function(response){});
+	}
+
+	// $('#btn-login').on('click', RequestLogin);
+	$('#btn-login').on('click', test);
 
 });
