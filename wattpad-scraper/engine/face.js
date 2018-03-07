@@ -38,15 +38,13 @@ async function face() {
 		// ];
 
 		let cooks = [
-		{name: 'sb', value: 'kMVYWgfSCvwzjao3O5fLsp-H'},
-		{name: 'datr', value: 'kMVYWpuKPqa3eso1NDiNWslY'},
-		{name: 'c_user', value: '100000064077046'},
-		{name: 'xs', value: '23%3A_VFqHmUNwOdwdQ%3A2%3A1515767217%3A2539%3A6165'},
+		{name: 'sb', value: '16OfWmty2a539R1PJDY2BYzQ'},
+		{name: 'datr', value: '16OfWsThjKP3bMtfFlUogmu-'},
+		{name: 'c_user', value: '100018229999393'},
+		{name: 'xs', value: '17%3A8kzGdRfnJ3-RHQ%3A2%3A1520411650%3A6330%3A6162'},
 		{name: 'pl', value: 'n'},
 		{name: 'wd', value: '1871x965'},
-		{name: 'fr', value: '0gMhLo8eVkDsDEr35.AWVF6v5ViLOQvf1Sl0Idn0TuqMo'},
-		{name: 'act', value: '1518417972235%2F6'},
-		{name: 'presence', value: 'EDvF3EtimeF1518418728EuserFA21BB64077046A2EstateFDutF1518418728086CEchFDp_5f1BB64077046F3CC'}
+		{name: 'fr', value: '0cXvTIxTmCaQCDlaE.AWVQIqasnnNeS07XSlo3Fw92Q6c.Ban6PX.sr.AAA.0.0.Ban6QC.AWXJ6ctE'},
 		];
 
 		for (let i in cooks) {
