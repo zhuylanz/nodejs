@@ -1,0 +1,55 @@
+const fs = require('fs');
+
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const watt_io = io.of('/wattpad-scraper');
+
+const ajax_route = require('./routes/ajax.js');
+const watt_route = require('./routes/wattpad-scraper.js');
+
+const watter = require('./engine/wattpad.js');
+
+
+app.use(express.static(__dirname));
+app.use('/ajax', ajax_route);
+app.use('/wattpad-scraper', watt_route);
+
+
+watt_io.on('connection', function(socket){
+	let session_id = socket.id;
+	console.log('------------------------\n>>new session: '+ session_id);
+
+	socket.on('scrape', function(msg, fn){
+		let logfile = (__dirname + '/logs/log-' + session_id.replace(/\//g,''));
+		console.log('>wattering ' + msg);
+
+		fn('Scraping...');
+		watter(msg, logfile);
+		
+		//log:
+		(function log_watt() {
+			let loggings = fs.readFileSync(logfile, 'utf8');
+			socket.emit('log_watt', loggings.split('\n'));
+
+			if (loggings.endsWith('--watt-ended--\n')) {
+				console.log('>log_watt ended');
+				socket.emit('log_watt ended', 'log_watt ended : OK');
+				// fs.unlinkSync(logfile);
+				return;
+			}
+			setTimeout(log_watt, 500);
+		})();
+
+	});
+
+	//on disconnect
+	socket.on('disconnect', () => {
+		console.log('<<user disconnected: ' + session_id);
+	});
+});
+
+
+
+http.listen(3214, () => { console.log('Wattpadd Scraper Up and Running on Port 3214'); });

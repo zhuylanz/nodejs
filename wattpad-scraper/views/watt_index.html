@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Wattpad Scraper</title>
+	<link rel="stylesheet" href="../public/stylesheets/style.css">
+
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+	<script src="http://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"
+	integrity="sha256-WPeFPWD3PZQUDrpFnDM1N2KadNVwCfNS4cCZ78b76T8="
+	crossorigin="anonymous"></script>
+</head>
+<body>
+	<div id="vue-region">
+		<h1>Wattpad Scraper</h1>
+		<br>
+		<form>
+			<input type="url" name="url" id="url" placeholder="Insert Wattpad Url">
+			<input type="button" value="Scrape" v-on:click.once="scrape" id="btn_scrape">
+			<input type="button" value="Download" v-on:click="downloadbook" id="btn_download">
+		</form>
+		<br>
+		<div id="log-container">
+			<div>
+				<p><strong>CONSOLE MONITOR</strong></p>
+			</div>
+			<hr/>
+			<ul id="logger">
+				<li v-for="log in log_watt">{{ log }}</li>
+			</ul>
+		</div>
+	</div>
+
+	<script src="../public/javascripts/watt_main.js"></script>
+</body>
+</html>
