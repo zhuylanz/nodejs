@@ -18,13 +18,13 @@ const db = require('./dbcon.js');
 // 	return t.any('SELECT * FROM users WHERE uid=$1', '314')
 // 	.then(function (data) {
 // 		console.log('DATA:', data);
-// 	return t.any('SELECT * FROM users WHERE uid=$1', '314d')
-// 	.then(function (data) {
-// 		console.log('DATA:', data);
-// 	})
-// 	.catch(function (error) {
-// 		console.log('ERROR: ' + error);
-// 	});
+// 		return t.any('SELECT * FROM users WHERE uid=$1', '314d')
+// 		.then(function (data) {
+// 			console.log('DATA:', data);
+// 		})
+// 		.catch(function (error) {
+// 			console.log('ERROR: ' + error);
+// 		});
 // 	})
 // 	.catch(function (error) {
 // 		console.log('ERROR: ' + error);
